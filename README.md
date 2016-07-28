@@ -1,6 +1,9 @@
 MyBatis Generator (MBG)
 =======================
 
+增加往javaClient里写入@Mapper注解,便于Spring boot扫描。
+使用方法是配置文件 context -> commentGenerator 里增加 property -> addMapperAnnotation,为true时写入注解。
+
 [![Build Status](https://travis-ci.org/mybatis/generator.svg?branch=master)](https://travis-ci.org/mybatis/generator)
 [![Coverage Status](https://coveralls.io/repos/mybatis/generator/badge.svg?branch=master&service=github)](https://coveralls.io/github/mybatis/generator?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/561964c6a193340f2800033c/badge.svg?style=flat)](https://www.versioneye.com/user/projects/561964c6a193340f2800033c)
