@@ -25,6 +25,7 @@ import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.CompilationUnit;
 import org.mybatis.generator.api.dom.java.Field;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.InnerClass;
 import org.mybatis.generator.api.dom.java.InnerEnum;
 import org.mybatis.generator.api.dom.java.JavaElement;
@@ -54,8 +55,14 @@ public class DefaultCommentGenerator implements CommentGenerator {
     private boolean suppressAllComments;
 
     /** The addition of table remark's comments.
-     * If suppressAllComments is true, this option is ignored*/
+     * If suppressAllComments is false, this option is ignored*/
     private boolean addRemarkComments;
+
+    /**
+     *  The addition of javaClient @Mapper.
+     *  If addMapperAnnotation is false, this option is ignored
+     */
+    private boolean addMapperAnnotation;
 
     /**
      * Instantiates a new default comment generator.
@@ -66,6 +73,7 @@ public class DefaultCommentGenerator implements CommentGenerator {
         suppressDate = false;
         suppressAllComments = false;
         addRemarkComments = false;
+        addMapperAnnotation = false;
     }
 
     /* (non-Javadoc)
@@ -131,6 +139,9 @@ public class DefaultCommentGenerator implements CommentGenerator {
 
         addRemarkComments = isTrue(properties
                 .getProperty(PropertyRegistry.COMMENT_GENERATOR_ADD_REMARK_COMMENTS));
+
+        addMapperAnnotation = isTrue(properties
+                .getProperty(PropertyRegistry.COMMENT_GENERATOR_ADD_MAPPER_ANNOTATION));
     }
 
     /**
@@ -182,7 +193,12 @@ public class DefaultCommentGenerator implements CommentGenerator {
         if (suppressAllComments) {
             return;
         }
-        
+        if (addMapperAnnotation) {
+            if (innerClass.getType().getShortName().endsWith("Mapper")) {
+                innerClass.addJavaDocLine("import org.apache.ibatis.annotations.Mapper;");
+            }
+        }
+
         StringBuilder sb = new StringBuilder();
 
         innerClass.addJavaDocLine("/**"); //$NON-NLS-1$
@@ -196,6 +212,13 @@ public class DefaultCommentGenerator implements CommentGenerator {
         addJavadocTag(innerClass, false);
 
         innerClass.addJavaDocLine(" */"); //$NON-NLS-1$
+
+        if (addMapperAnnotation) {
+            if (innerClass.getType().getShortName().endsWith("Mapper")) {
+                innerClass.addJavaDocLine("@Mapper");
+            }
+        }
+
     }
 
     /* (non-Javadoc)

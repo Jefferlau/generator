@@ -19,11 +19,14 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.dom.java.CompilationUnit;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.InnerClass;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
@@ -74,6 +77,17 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
         Interface interfaze = new Interface(type);
         interfaze.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(interfaze);
+
+        InnerClass innerClass = new InnerClass(interfaze.getType());
+        commentGenerator.addClassComment(innerClass, introspectedTable);
+
+        List<String> javaDocLines = innerClass.getJavaDocLines();
+        //Collections.copy(javaDocLines, innerClass.getJavaDocLines());
+
+        for (String string : javaDocLines) {
+            System.out.println(string);
+            interfaze.addJavaDocLine(string);
+        }
 
         String rootInterface = introspectedTable
             .getTableConfigurationProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
